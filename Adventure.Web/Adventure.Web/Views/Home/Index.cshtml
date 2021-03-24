@@ -1,0 +1,30 @@
+﻿@model HomeIndexViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    <h2>Best sales people</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sales person identifier</th>
+                <th>Total sold</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.BestSalesPeople)
+            {
+                <tr>
+                    <td>@item.SalesPerson</td>
+                    <td>@item.TotalSold.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
