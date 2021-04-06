@@ -36,16 +36,23 @@ Revisit memory objects, find 500 cached objects and supporting objects. https://
 4. Once you hit breakpoint, open the output window, clear it's content, press F10 and examine the newly added records. Stop the project.
 5. Go to the [Startup.cs](Adventure.Web/Adventure.Web/Startup.cs) file, find a line with `AdventureDBContext` configuration and add `.LogTo(_=> Debug.WriteLine(_), LogLevel.Information)` to the configuration method chain, add missing `using` statements. Start the project again and repeat the previous step.
 6. Examine the info message with actual SQL query performed. Press F10 a few more times while keeping output window open to see how lazy loading triggers new SQL statements to appear.
+7. Remove the breakpoint. Stop debugging.
 
 ### SQL Profiler
-1. Launch SQL Server Profiler.
-2. 
+1. Launch SQL Server Profiler. Start a new trace, enter connection details. Please notice that elevated DB permissions might be required in order to collect traces.
+2. In trace properties, under `Use the template:` select `TSQL_Duration`. Press Run.
+3. Revisit Trace Windows, notice enormous amount of SQL statements listed.
+4. Notice that SQL Server Profiler can be used in many more cases, such as: deadlocks diagnostics, transactions durations, numbers of physical reads, statistics etc.
+5. Clear trace window.
 
 ### Include versus lazy loading
-Check memory snapshot, check queries.
-
-### Non-tracking queries
-Check memory snapshot.
+1. Start the project and collect memory dump. Notice memory objects number and heap size. 
+2. Open [AdventureDBContext.cs](Adventure.Web/Adventure.Model/Models/AdventureDBContext.cs) file, find `OnConfiguring` method and comment out of remove `UseLazyLoadingProxies` configuration.
+3. Open [StatisticsService.cs](Adventure.Web/Adventure.Logic/Services/StatisticsService.cs) file, find `GetBestSalesPeople` method. Modify customers selection logic, extend it with additional include statements `.Include("SalesOrderHeaders.SalesOrderDetails")`. Optionally mark query as non-tracking.
+4. Start the project again. Collect memory dump again and notice reduced number of objects created as well as reduced heap size.
+5. Get back to SQL Server Profiler, notice a single SQL statement added to the traces window. 
+6. Copy SQL statement and start SQL Server Management Studio, connect to the same DB, create a new query, execute copied statement.
+7. Scroll through results, notice excessive customer data duplicated multiple times in order for Include statements to work correctly. Find customer `Metropolitan Bicycle Supply` and revisit duplicated data in `Customer` table columns.
 
 ### Custom objects versus include
 Check memory snapshot, check queries.
