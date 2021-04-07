@@ -2,7 +2,7 @@
 
 ## Before you get started
 - It's recommended to watch [udemy course](https://www.udemy.com/course/entity-framework-core-tutorial) to grasp basic concepts.
-- Make sure you have SQL Server Profiler installed. Re-run SQL Server installer package otherwise and make sure you have `Management Tools - Complete` option selected.
+- Make sure you have Azure Data Studio witn SQL Server Profiler extension installed. Alternatively you can use SQL Server Profiler that comes with on premise SQL Server installation, to install it you can re-run SQL Server installer package and make sure you have `Management Tools - Complete` option selected.
 - **Adventure.Web** project is created using ASP.NET Core Web APP (MVC) project template.
 - **Adventure.Model** project is a .NET Class library. DB context is generated using `Scaffold-DbContext` comand out of a sample AdventureWorks Azure DB. For more information check [scaffolding tutorial](https://www.entityframeworktutorial.net/efcore/create-model-for-existing-database-in-ef-core.aspx).
 - **Adventure.Logicc** project is a project representing aggregation summaries logic.

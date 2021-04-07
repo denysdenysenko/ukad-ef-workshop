@@ -17,7 +17,7 @@ namespace Adventure.Logic.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<BestSalesPeopleModel>> GetBestSalesPeople(int top)
+        public async Task<List<BestSalesPeopleModel>> GetBestSalesPeopleAsync(int top)
         {
             var customers = await _dbContext.Customers.ToListAsync();
             Dictionary<string, decimal> salesPeople = new Dictionary<string, decimal>();
