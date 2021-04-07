@@ -46,10 +46,27 @@ namespace Adventure.Logic.Services
                               .ToList();
         }
 
+        public async Task<List<BestSalesPeopleModel>> GetBestSalesPeopleAggregateAsync(int top)
+        {
+            List<BestSalesPeopleModel> bestSalesPeople = await (from customer in _dbContext.Customers
+                                                                from header in customer.SalesOrderHeaders.DefaultIfEmpty()
+                                                                from detail in header.SalesOrderDetails.DefaultIfEmpty()
+                                                                group new { customer, detail } by customer.SalesPerson into g
+                                                                select new BestSalesPeopleModel
+                                                                {
+                                                                    SalesPerson = g.Key,
+                                                                    TotalSold = g.Sum(i => i.detail.LineTotal),
+                                                                })
+                                                                .OrderByDescending(i => i.TotalSold)
+                                                                .Take(top)
+                                                                .ToListAsync();
+
+            return bestSalesPeople;
+        }
+
         public async Task CacheProductModelProductDescription(int top)
         {
             _productDescriptionCache = await _dbContext.ProductModelProductDescriptions
-                                                       //.AsNoTracking()
                                                        .Take(top)
                                                        .ToListAsync();
         }
