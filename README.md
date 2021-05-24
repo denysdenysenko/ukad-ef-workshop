@@ -39,7 +39,6 @@ Revisit memory objects, find 500 cached objects and supporting objects. https://
 4. Start the project and repeat step 1, notice reduced number of memory objects. https://i.imgur.com/uBgswb7.png.
 5. Stop the project.
 
-
 ### Database log feed
 1. Remove `_bestSalesStub` variable declaration at the top of [HomeController.cs](Adventure.Web/Adventure.Web/Controllers/HomeController.cs).
 2. Replace `_bestSalesStub` assignment within `Index` action with actual statistics service call `vm.BestSalesPeople = await _statisticsService.GetBestSalesPeopleAsync(10);`.
@@ -50,7 +49,7 @@ Revisit memory objects, find 500 cached objects and supporting objects. https://
 7. Remove the breakpoint. Stop debugging.
 
 ### Azure Data Studio
-Review the next section if you use SQL Server Profiler instead of Azure Data Studio. Please notice that SQL Server Profiler only works with on-premise installations.
+Review the next section if you use SQL Server Profiler instead of Azure Data Studio.
 1. Launch Azure Data Studio. Add new connection using conection string details from the #Setup step.
 2. Right-click server node and choose Launch Profiler or press Alt+P. Choose installation type (on-premise or Azure) and press Start button.
 3. In top menu in select view choose `TSQL_Duration View` which will filter out system traces.
@@ -71,11 +70,13 @@ Alternatively you can use SQL Server Profiler with on-premise SQL Server install
 ### Include versus lazy loading
 1. Start the project and collect memory dump. Notice memory objects number and heap size. 
 2. Open [AdventureDBContext.cs](Adventure.Web/Adventure.Model/Models/AdventureDBContext.cs) file, find `OnConfiguring` method and comment out of remove `UseLazyLoadingProxies` configuration.
-3. Open [StatisticsService.cs](Adventure.Web/Adventure.Logic/Services/StatisticsService.cs) file, find `GetBestSalesPeopleAsync` method. Modify customers selection logic, extend it with additional include statements `.Include("SalesOrderHeaders.SalesOrderDetails")`. Optionally mark query as non-tracking.
+3. Open [StatisticsService.cs](Adventure.Web/Adventure.Logic/Services/StatisticsService.cs) file, find `GetBestSalesPeopleAsync` method. Modify customers selection logic, extend it with additional include statements `Include(c => c.SalesOrderHeaders).ThenInclude(h => h.SalesOrderDetails)`. Optionally mark query as non-tracking.
 4. Start the project again. Collect memory dump again and notice reduced number of objects created as well as reduced heap size.
 5. Get back to the Profiler extension in Azure Data Studio (or SQL Server Profiler), notice a single SQL statement added to the traces window. 
 6. Copy SQL statement and execute it in Azure Data Studio as a new query. Alternatively you can start SQL Server Management Studio, connect to the same DB, create a new query and execute copied statement.
 7. Scroll through results, notice excessive customer data duplicated multiple times in order for Include statements to work correctly. Find customer `Metropolitan Bicycle Supply` and revisit duplicated data in `Customer` table columns.
+
+### Load vs Include
 
 ### Custom objects versus include
 1. Start the application, open developers tool, network tab. Hit refresh a few times, see how long does it take to load the document.
