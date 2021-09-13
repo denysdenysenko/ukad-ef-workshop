@@ -33,7 +33,7 @@ Go to **Diagnistic Tools**, **Memory Usage**, press **Take Snapshot**. Revisit m
 
 ### Tracking vs NoTracking
 1. While keeping the project running go to https://localhost:44382/home/cache?top=500, after that take another memory snapshot.
-Revisit memory objects, find 500 cached objects and supporting objects. https://i.imgur.com/YOHtZd2.png
+Revisit memory objects, find 500 cached objects and supporting objects. https://i.imgur.com/YOHtZd2.png.
 2. Stop the project.
 3. Go to [StatisticsService.cs](Adventure.Web/Adventure.Logic/Services/StatisticsService.cs), insert `.AsNoTracking()` line in `CacheProductModelProductDescription` method. 
 4. Start the project and repeat step 1, notice reduced number of memory objects. https://i.imgur.com/uBgswb7.png.
